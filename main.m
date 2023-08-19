@@ -1,5 +1,5 @@
 %% Initialization
-clc;clear;close all;
+clc; clear; close all;
 
 saveDir = datetime("now",format='yyyy-MM-dd');
 wavelength = 1.064e-6;
