@@ -34,7 +34,7 @@ def freqdiff_flattop(t_inc, t_tot, dist, round_trip, wait_time, t1=375):
         t = np.arange(len(f), dtype=int)
     return t, f * amp
 
-def save_table(freq0, freq1, amp0, amp1, phase0, phase1, t_inc, trajName):
+def save_table(freq0, freq1, amp0, amp1, phase0, phase1, t_inc, trajName, fig):
     if os.path.exists('./' + datetime.now().strftime('%Y-%m-%d')) == False:
         os.mkdir(datetime.now().strftime('%Y-%m-%d'))
     
@@ -51,4 +51,8 @@ def save_table(freq0, freq1, amp0, amp1, phase0, phase1, t_inc, trajName):
         
         textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' 0000\n')
         textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0000')
+
     print('Table saved as ' + fileName)
+
+    fig.savefig(currentwdr+'\\'+datetime.now().strftime('%Y-%m-%d')+'\\'+fileName+'.png')
+    print('Figure saved as ' + fileName + '.png')
