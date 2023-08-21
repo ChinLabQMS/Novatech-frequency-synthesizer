@@ -12,20 +12,19 @@ saveFile = false;
 %% Parameters
 traj.para = [0.84, 1]; % Degree of "flatness" for flattop trajectory
 traj.shape = @Cos_flat;
-traj.dist = 279.809; % Total distance in mm (absolute value)
-traj.step = 5; % Step size in the integer multiple of 100us
-traj.time = 453.4; % Total time in ms
+traj.dist = 279.4; % Total distance in mm (absolute value)
+traj.step = 1; % Step size in the integer multiple of 100us
+traj.time = 450; % Total time in ms
 
 %% Generate curve - frequency sweep in MHz
-amp = traj.dist/(wavelength*integral(@(x)abs(traj.shape(x,traj.para)),0,1)*traj.time);
-curve = @(x) amp*traj.shape(x/traj.time,traj.para)*1e-6;
+curve = @(x) traj.shape(x/traj.time, traj.para)*1e-6;
 
 %% Generate and save plot/table/parameters
 t = 0:0.1:traj.time;
 numStep = length(t);
 
-freq0 = defaultFreq0*ones(1,numStep);
-freq1 = defaultFreq1*ones(1,numStep)+curve(fix(10*t/traj.step)*traj.step*0.1);
+freq0 = defaultFreq0 * ones(1,numStep);
+freq1 = defaultFreq1 * ones(1,numStep) + curve(fix(10*t/traj.step)*traj.step*0.1);
 
 plot(t,freq0,t,freq1);
 legend('freq0','freq1');
