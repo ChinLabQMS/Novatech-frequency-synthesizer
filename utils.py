@@ -15,7 +15,7 @@ def distance_traveled(freqdiff, wavelength=wavelength, interval=1e-4):
     # freqdiff is in units of MHz
     # wavelength is in units of meters
     # distance is in units of meters
-    return np.sum(freqdiff) * wavelength * 1e6 * interval
+    return np.sum(abs(freqdiff)) * wavelength * 1e6 * interval
 
 def freqdiff_flattop(t_inc, t_tot, dist, round_trip, wait_time, t1=375):
     if type(t1) == float:
@@ -32,7 +32,7 @@ def freqdiff_flattop(t_inc, t_tot, dist, round_trip, wait_time, t1=375):
     if round_trip:
         f = np.concatenate((f, np.zeros(int(wait_time / (t_inc*1e-4))), -f[::-1]))
         t = np.arange(len(f), dtype=int)
-    return t, f * amp
+    return t, np.around(f * amp, decimals=7)
 
 def save_table(freq0, freq1, amp0, amp1, phase0, phase1, t_inc, trajName, fig):
     if os.path.exists('./' + datetime.now().strftime('%Y-%m-%d')) == False:
