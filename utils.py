@@ -11,30 +11,67 @@ defaultfreq1 = '080.0000000' # frequency when table is not running
 defaultphase1 = '00000' # phase when table is not running
 defaultamp1 = '0820' # amplitude when table is not running (N/1023) default 0820
 
-def distance_traveled(freqdiff, wavelength=wavelength, interval=1e-4):
-    # freqdiff is in units of MHz
-    # wavelength is in units of meters
-    # distance is in units of meters
-    return np.sum(abs(freqdiff)) * wavelength * 1e6 * interval
-
-def freqdiff_flattop(t_inc, t_tot, dist, round_trip, wait_time, t1=375):
-    if type(t1) == float:
-        T1 = int(t1 * t_tot / (1e-4*t_inc))
-    elif type(t1) == int:
-        T1 = t1
+def freqdiff_flattop(t_inc, t_tot, dist, round_trip, wait_time, tramp=400):
+    if type(tramp) == float:
+        T1 = int(tramp * t_tot / (1e-4*t_inc))
+    elif type(tramp) == int:
+        T1 = tramp
 
     t = np.arange(t_tot / (1e-4*t_inc), dtype=int)
     f = (1 - np.cos(np.pi * t / T1)) * (t < T1) \
         + 2 * ((t >= T1) & (t < len(t) - T1)) \
         + (1 + np.cos(np.pi * (t - (len(t) - T1)) / T1)) * (t >= len(t) - T1)
     
-    amp = dist / distance_traveled(f, interval=t_inc*1e-4)
+    amp = dist / (np.sum(abs(f)) * wavelength * t_inc * 1e2)
     if round_trip:
         f = np.concatenate((f, np.zeros(int(wait_time / (t_inc*1e-4))), -f[::-1]))
         t = np.arange(len(f), dtype=int)
-    return t, np.around(f * amp, decimals=7)
+    return t, np.around(amp * f, decimals=7)
 
-def save_table(freq0, freq1, amp0, amp1, phase0, phase1, t_inc, trajName, fig):
+
+def freqdiff_continous(t_inc, t_tot, final_vel, tramp=400):
+    if type(tramp) == float:
+        T1 = int(tramp * t_tot / (1e-4*t_inc))
+    elif type(tramp) == int:
+        T1 = tramp
+    
+    t = np.arange(t_tot / (1e-4*t_inc), dtype=int)
+    f = (1 - np.cos(np.pi * t / T1)) * (t < T1) \
+        + 2 * (t >= T1)
+    
+    amp = final_vel / (f.max() * wavelength * 1e6)
+    f = np.around(amp * f, decimals=7)
+
+    return t, f
+
+def make_figure(freqdiff, t_inc, trajName):
+    dist_actual = np.cumsum(freqdiff) * wavelength * t_inc *1e2
+    accel = np.diff(freqdiff) * 1e6 / (t_inc*0.0001) * wavelength
+    vel = freqdiff * 1e6 * wavelength
+    description = f'Max distance (m) = {dist_actual.max():.4f}\nMax acceleration (m/s^2) = {accel.max():.2f}\nMax velocity (m/s) = {vel.max():.3f}'
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    fig.suptitle(trajName, fontweight='bold')
+    fig.subplots_adjust(top=0.85)
+    ax.set_title(description)
+    ax.plot(np.arange(len(freqdiff)) * t_inc * 0.1, freqdiff)
+    ax.axhline(0, c='k', linewidth=0.5)
+
+    ax.set_xlabel('Time (ms)')
+    ax.set_ylabel('Frequency diff (MHz)')
+    ax.legend(['freq1 - freq0'])
+    plt.show()
+
+    return fig, dist_actual
+
+def save_table(freqdiff, t_inc, trajName, fig):
+    amp0 = [defaultamp0] * len(freqdiff)
+    amp1 = [defaultamp1] * len(freqdiff)
+    phase0 = [defaultphase0] * len(freqdiff)
+    phase1 = [defaultphase1] * len(freqdiff)
+    freq0 = [defaultfreq0] * len(freqdiff)
+    freq1 = ["0%#10.7f" % (x + float(defaultfreq1)) for x in (freqdiff)]
+
     if os.path.exists('./' + datetime.now().strftime('%Y-%m-%d')) == False:
         os.mkdir(datetime.now().strftime('%Y-%m-%d'))
     
