@@ -71,14 +71,15 @@ def save_table(freqdiff, t_inc, trajName, fig):
 
         for i in range(len(freq1)):
             if freq1[i] != prevfreq1:
+                textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc * counter,"04") + '\n')
+                textFile.write('1 ' + prevfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc * counter,"04") + '\n')
                 prevfreq1, counter = freq1[i], 1
             else:
                 counter += 1
                 continue
-            textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc * counter,"04") + '\n')
-            textFile.write('1 ' + prevfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc * counter,"04") + '\n')
-        textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + format(t_inc * counter,"04") + '\n')
-        textFile.write('1 ' + prevfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + format(t_inc * counter,"04") + '\n')
+            
+        textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc * counter,"04") + '\n')
+        textFile.write('1 ' + prevfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc * counter,"04") + '\n')
         textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' 0000\n')
         textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0000')
 
