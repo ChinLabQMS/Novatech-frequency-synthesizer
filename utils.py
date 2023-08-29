@@ -63,25 +63,16 @@ def save_table(freqdiff, t_inc, trajName, fig):
     currentwdr = os.getcwd()
     fileName = datetime.now().strftime('%Y-%m-%d_%H-%M-%S_') + trajName + '.txt' # Output file name
 
-    counter = 1
-    prevfreq1 = defaultfreq1
     with open(currentwdr+'\\'+datetime.now().strftime('%Y-%m-%d')+'\\'+fileName,'w+') as textFile:
         textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' 0255\n')
         textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0255\n')
 
         for i in range(len(freq1)):
-            if freq1[i] != prevfreq1:
-                textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc * counter,"04") + '\n')
-                textFile.write('1 ' + prevfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc * counter,"04") + '\n')
-                prevfreq1, counter = freq1[i], 1
-            else:
-                counter += 1
-                continue
-            
-        textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc * counter,"04") + '\n')
-        textFile.write('1 ' + prevfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc * counter,"04") + '\n')
+            textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc,"04") + '\n')
+            textFile.write('1 ' + freq1[i] + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc,"04") + '\n')
+
         textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' 0000\n')
-        textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0000')
+        textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0000\n')
 
     print('Table saved as ' + fileName)
 
