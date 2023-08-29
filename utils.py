@@ -67,17 +67,20 @@ def save_table(freqdiff, t_inc, trajName, fig):
         textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' 0255\n')
         textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0255\n')
         
-        prevfreq, count = defaultfreq1, 1
+        # prevfreq, count = defaultfreq1, 1
         for i in range(len(freq1)):
-            if freq1[i] != prevfreq or (count + 1) * t_inc > 254:
-                textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(count*t_inc,"04") + '\n')
-                textFile.write('1 ' + prevfreq + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(count*t_inc,"04") + '\n')
-                prevfreq, count = freq1[i], 1
-            else:
-                count += 1
+            # if freq1[i] != prevfreq or (count + 1) * t_inc > 254:
+            #     textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(count*t_inc,"04") + '\n')
+            #     textFile.write('1 ' + prevfreq + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(count*t_inc,"04") + '\n')
+            #     prevfreq, count = freq1[i], 1
+            # else:
+            #     count += 1
+            textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(t_inc,"04") + '\n')
+            textFile.write('1 ' + freq1[i] + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(t_inc,"04") + '\n')
 
-        textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(count*t_inc,"04") + '\n')
-        textFile.write('1 ' + prevfreq + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(count*t_inc,"04") + '\n')
+
+        # textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' ' + format(count*t_inc,"04") + '\n')
+        # textFile.write('1 ' + prevfreq + ' ' + defaultphase1 + ' ' + defaultamp1 + ' ' + format(count*t_inc,"04") + '\n')
         textFile.write('0 ' + defaultfreq0 + ' ' + defaultphase0 + ' ' + defaultamp0 + ' 0000\n')
         textFile.write('1 ' + defaultfreq1 + ' ' + defaultphase1 + ' ' + defaultamp1 + ' 0000\n')
 
