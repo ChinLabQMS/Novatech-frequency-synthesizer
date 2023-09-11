@@ -38,11 +38,15 @@ def make_figure(freqdiff, t_inc, trajName):
     dist_actual = np.cumsum(freqdiff) * wavelength * t_inc *1e2
     accel = np.diff(freqdiff) * 1e6 / (t_inc*0.0001) * wavelength
     vel = freqdiff * 1e6 * wavelength
-    description = f'Max distance (m) = {dist_actual.max():.4f}\nMax acceleration (m/s^2) = {accel.max():.2f}\nMax velocity (m/s) = {vel.max():.3f}'
+    time_to_accelerate = vel.argmax()
+    description =  f'Distance during ramping (mm) = {1000*dist_actual[time_to_accelerate]:.3f}\n' + \
+                f'Max distance (mm) = {1000*dist_actual.max():.3f}\n' + \
+                f'Max acceleration (m/s^2) = {accel.max():.2f}\n' + \
+                f'Max velocity (m/s) = {vel.max():.3f}'
 
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(9, 6))
     fig.suptitle(trajName, fontweight='bold')
-    fig.subplots_adjust(top=0.85)
+    fig.subplots_adjust(top=0.8)
     ax.set_title(description)
     ax.plot(np.arange(len(freqdiff)) * t_inc * 0.1, freqdiff)
     ax.axhline(0, c='k', linewidth=0.5)
